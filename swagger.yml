@@ -1,0 +1,378 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Rest Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+
+# Paths supported by the server application
+paths:
+  /users:
+    get:
+      operationId: users.read_all
+      tags:
+        - Users
+      summary: Read the entire set of users, sorted by name
+      description: Read the entire set of users, sorted by name
+      responses:
+        200:
+          description: Successfully read users set operation
+          schema:
+            type: array
+            items:
+              properties:
+                users_id:
+                  type: integer
+                  description: Id of the user
+                name:
+                  type: string
+                  description: Name of user
+                timestamp:
+                  type: string
+                  description: Create/Update timestamp of the person
+                tasks:
+                  type: array
+                  items:
+                    properties:
+                      user_id:
+                        type: integer
+                        description: Id of person this task is associated with
+                      task_id:
+                        type: integer
+                        description: Id of this task
+                      description:
+                        type: string
+                        description: description of task
+                      state:
+                        type: string
+                        description: state of task todo or done
+                      timestamp:
+                        type: string
+                        description: Create/Update timestamp of this task
+
+    post:
+      operationId: users.create
+      tags:
+        - Users
+      summary: Create a user
+      description: Create a new user
+      parameters:
+        - name: user
+          in: body
+          description: User to create
+          required: True
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of user to create
+      responses:
+        201:
+          description: Successfully created user
+          schema:
+            properties:
+              user_id:
+                type: integer
+                description: Id of the user
+              name:
+                type: string
+                description: Name of the person
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the person record
+
+  /users/{user_id}:
+    get:
+      operationId: users.read_one
+      tags:
+        - Users
+      summary: Read one user
+      description: Read one user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id of the user to get
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read user from users data operation
+          schema:
+            type: object
+            properties:
+              user_id:
+                type: string
+                description: Id of the user
+              name:
+                type: string
+                description: Name of the person
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the user record
+              tasks:
+                type: array
+                items:
+                  properties:
+                    user_id:
+                      type: integer
+                      description: Id of user this task is associated with
+                    task_id:
+                      type: integer
+                      description: Id of this task
+                    description:
+                      type: string
+                      description: description of this task
+                    state:
+                      type: string
+                      description: state of this task
+                    timestamp:
+                      type: string
+                      description: Create/Update timestamp of this task
+
+    put:
+      operationId: users.update
+      tags:
+        - Users
+      summary: Update a user
+      description: Update a user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id the user to update
+          type: integer
+          required: True
+        - name: user
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the user
+      responses:
+        200:
+          description: Successfully updated user
+          schema:
+            properties:
+              user_id:
+                type: integer
+                description: Id of the user in the database
+              name:
+                type: string
+                description: Name of the user
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the user record
+
+    delete:
+      operationId: users.delete
+      tags:
+        - Users
+      summary: Delete a user from the user list
+      description: Delete a user
+      parameters:
+        - name: user_id
+          in: path
+          type: integer
+          description: Id of the user to delete
+          required: true
+      responses:
+        200:
+          description: Successfully deleted a user
+
+  /tasks:
+    get:
+      operationId: tasks.read_all
+      tags:
+        - Tasks
+      summary: Read the entire set of tasks for all users, sorted by timestamp
+      description: Read the entire set of tasks for all users, sorted by timestamp
+      responses:
+        200:
+          description: Successfully read tasks for all users operation
+          schema:
+            type: array
+            items:
+              properties:
+                task_id:
+                  type: integer
+                  description: Id of the task
+                content:
+                  type: string
+                  description: Content of the task
+                timestamp:
+                  type: string
+                  description: Create/Update timestamp of the task
+                user:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                      description: Id of associated user
+                    name:
+                      type: string
+                      description: Name of associated user
+                    timestamp:
+                      type: string
+                      description: Create/Update timestamp of associated user
+
+
+  /users/{user_id}/tasks:
+    post:
+      operationId: tasks.create
+      tags:
+        - Tasks
+      summary: Create a task associated with a user
+      description: Create a task associated with a user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id of user associated with task
+          type: integer
+          required: True
+        - name: task
+          in: body
+          description: Text content of the task to create
+          required: True
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+                description: Text of the task to create
+      responses:
+        201:
+          description: Successfully created a task
+          schema:
+            properties:
+              user_id:
+                type: integer
+                description: Id of the user associated with the task
+              task_id:
+                type: integer
+                description: Id of the created task
+              description:
+                type: string
+                description: description of task
+              state:
+                type: string
+                description: done or to_do
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the person record
+
+  /users/{user_id}/tasks/{task_id}:
+    get:
+      operationId: tasks.read_one
+      tags:
+        - Tasks
+      summary: Read a particular task associated with a user
+      description: Read a particular task associated with a user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id of user associated with task
+          type: integer
+          required: True
+        - name: task_id
+          in: path
+          description: Id of task
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read task for a user
+          schema:
+            type: object
+            properties:
+              task_id:
+                type: integer
+                description: Id of the task
+              user_id:
+                type: integer
+                description: Id of the user associated with task
+              description:
+                type: string
+                description: description of task
+              state:
+                type: string
+                description: done or to_do
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the task record
+
+    put:
+      operationId: tasks.update
+      tags:
+        - Tasks
+      summary: Update a task associated with a user
+      description: Update a task associated with a user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id the user to update
+          type: integer
+          required: True
+        - name: task_id
+          in: path
+          description: Id of the task associated with a user
+          type: integer
+          required: True
+        - name: task
+          in: body
+          schema:
+            type: object
+            properties:
+              description:
+                type: string
+                description: Text content of the task to updated
+              state:
+                type: string
+                description: Text state of task to update
+      responses:
+        200:
+          description: Successfully updated task
+          schema:
+            properties:
+              task_id:
+                type: string
+                description: Id of the task associated with a user
+              user_id:
+                type: integer
+                description: Id of the user in the database
+              description:
+                type: string
+                description: Text content of the updated task
+              state:
+                type: string
+                description: Text state of the updated task
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the task record
+
+    delete:
+      operationId: tasks.delete
+      tags:
+        - Tasks
+      summary: Delete a task associated with a user
+      description: Delete a task associated with a user
+      parameters:
+        - name: user_id
+          in: path
+          description: Id of user associated with task
+          type: integer
+          required: True
+        - name: task_id
+          in: path
+          description: Id of task
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a task

@@ -1,0 +1,72 @@
+{% extends "parent.html" %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/tasks.css">
+{% endblock %}
+
+{% block page_name %}User Task Create/Update/Delete Page{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <input id="url_user_id" type="hidden" value="{{ user_id }}" />
+        <input id="url_task_id" type="hidden" value="{{ task_id }}" />
+        <div class="section display">
+            <div>
+                <span>User ID:</span>
+                <span id="user_id"></span>
+            </div>
+            <div>
+                <span>Name:</span>
+                <span id="name"></span>
+            </div>
+            <div>
+                <span>Timestamp:</span>
+                <span id="timestamp"></span>
+            </div>
+        </div>
+        <div class="section editor">
+            <div>
+                <span>Task ID:</span>
+                <span id="task_id"></span>
+            </div>
+            <label for="task">Note
+                <input id="task" type="text" maxlength="200"/>
+            </label>
+            <br />
+            <button id="create">Create</button>
+            <button id="update">Update</button>
+            <button id="delete">Delete</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+    <div class="tasks">
+        <table>
+            <caption>Tasks</caption>
+            <thead>
+                <tr>
+                    <th class="timestamp">Update Time</th>
+                    <th class="description">Description</th>
+		    <th class="state">State</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="error"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ super() }}
+<script type="module">
+    // Give the imported MVC components a namespace
+    import * as MVC from "/static/js/tasks.js";
+
+    // Create an intentional global variable referencing the import
+    window.mvc = MVC;
+</script>
+{% endblock %}
